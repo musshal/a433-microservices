@@ -1,0 +1,38 @@
+# menentukan versi Docker Compose 
+version: "3.7"
+
+# menentukan services yang akan dibuat
+services:
+  # membuat service item-app
+  item-app:
+    # menarik image item-app dari Docker Hub
+    image: musshal/item-app:v1
+    # menjalankan perintah untuk instalasi dependensi, build aplikasi, dan menjalankan aplikasi
+    command: sh -c "npm install --production --unsafe-perm && npm run build && npm start"
+    # menentukan port mapping agar dapat diakses dari port 80
+    ports:
+      - 80:8080
+    # menentukan working directory
+    working_dir: /app
+    # menentukan volume yang digunakan service item-app
+    volumes:
+      - ./:/app
+    # menentukan environment variable yang digunakan item-app
+    environment:
+      NODE_ENV: production
+      DB_HOST: item-db
+    # menerapkan restart policy agar container selalu restart ketika berhenti
+    restart: on-failure
+
+  # membuat service item-db
+  item-db:
+    # menarik image mongo:3
+    image: mongo:3
+    # menentukan volume yang digunakan item-db
+    volumes:
+      - app-db:/data/db
+    # menerapkan restart policy agar container selalu restart ketika berhenti
+    restart: on-failure
+
+volumes:
+  app-db:
