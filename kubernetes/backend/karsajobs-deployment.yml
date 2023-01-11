@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: karsajobs-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: karsajobs-app
+  template:
+    metadata:
+      labels:
+        app: karsajobs-app
+    spec:
+      containers:
+        - name: karsajobs
+          image: musshal/karsajobs:latest
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: 200m
+            requests:
+              cpu: 100m
+          ports:
+            - containerPort: 8080
+          env:
+            - name: APP_PORT
+              value: "8080"
+            - name: MONGO_HOST
+              value: mongo-service
+            - name: MONGO_USER
+              value: admin
+            - name: MONGO_PASS
+              value: supersecretpassword
